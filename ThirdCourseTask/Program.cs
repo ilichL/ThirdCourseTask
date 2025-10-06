@@ -32,17 +32,20 @@ else
 using var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(cfg =>
     {
+		cfg.Sources.Clear();
+        cfg.SetBasePath(AppContext.BaseDirectory);
         cfg.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         cfg.AddEnvironmentVariables();
     })
     .ConfigureServices(services =>
     {
-        services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+        services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<ITaskRepository, TaskRepository>();
         services.AddScoped<ITaskService, TaskService>();
-        services.AddSingleton<IInputService, ConsoleInputService>();
+        services.AddScoped<IInputService, ConsoleInputService>();
     })
     .Build();
+    
 
 var inputService = host.Services.GetRequiredService<IInputService>();
 
